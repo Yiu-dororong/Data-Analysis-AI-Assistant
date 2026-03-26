@@ -14,7 +14,7 @@ st.set_page_config(layout="wide")
 init_streamlit_comm()
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA_DIR = os.path.join(SCRIPT_DIR, "test")
-st.title("AI Data Reporter")
+st.title("Data Analysis AI Assistant")
 with st.expander("📖 How to Use This App "):
     st.markdown("""
         Welcome to your End-to-End AI Data Auditor. To get the most accurate insights from your data, please follow these guidelines:

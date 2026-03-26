@@ -32,6 +32,7 @@ def preprocessing_node(state: AgentState):
     logger.info("--- Entering Preprocessing Node ---")
     #Create Replace Option for null/outlier etc? like "unknown"
     logger.info("Dropping duplicates and NA values.")
+    state["null_and_dup"] = (df.isna().sum().sum(), df.duplicated().sum())
     df.drop_duplicates(inplace=True)
     df.dropna(inplace=True)
 
@@ -42,7 +43,7 @@ def preprocessing_node(state: AgentState):
     if len(df) < 5:
         state['error'] = True
         state['error_message'] = "The dataset has less than 5 rows after preprocessing"
-    state["null_and_dup"] = (df.isna().sum().sum(), df.duplicated().sum())
+    
     df = sanitize_column_names(df)
     state['sample_values'] = df.sample(5,ignore_index=True)
     state['data_profile'] = get_data_profile(df)

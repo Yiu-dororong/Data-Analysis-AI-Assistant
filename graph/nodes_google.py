@@ -229,14 +229,19 @@ def feature_engineering_node(state: AgentState):
     chain = prompt | llm | parser
 
     logger.info("Invoking LLM for feature engineering plan.")
-    result_dict = chain.invoke({
-        "enriched_context": state['enriched_context'],
-        "primary_metric": state['primary_metric'],
-        "secondary_metrics": state['secondary_metrics'],
-        "time_metadata": time_metadata,
-        "data_profile": state['data_profile'],
-    })
-    result = FEModel(**result_dict)
+    try:
+        result_dict = chain.invoke({
+            "enriched_context": state['enriched_context'],
+            "primary_metric": state['primary_metric'],
+            "secondary_metrics": state['secondary_metrics'],
+            "time_metadata": time_metadata,
+            "data_profile": state['data_profile'],
+        })
+        result = FEModel(**result_dict)
+    except Exception as e:
+        logger.error(f"Validation error in Feature Engineering: {e}")
+        state['data_profile'] = get_data_profile(df)
+        return state
 
     if not result.needed:
         logger.info("No feature engineering needed according to the plan.")

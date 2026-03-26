@@ -317,3 +317,7 @@ if st.session_state.workflow_started:
     else:
         status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
     stop_button_placeholder.empty()
+
+    if st.button("🔄 Restart Analysis"):
+        st.session_state.clear()
+        st.rerun()

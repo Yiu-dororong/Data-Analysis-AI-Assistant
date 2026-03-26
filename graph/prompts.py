@@ -110,9 +110,9 @@ You are a Lead Data Narrative Architect. Your task is to design a dynamic, high-
 Identify 5 to 15 high-impact column combinations. 
 
 ### SELECTION CATEGORIES
-1. **The Baseline (Univariate)**: Select the Primary Metric and its top 1-2 drivers to establish distributions and outliers.
+1. **The Baseline (Univariate)**: Select the Primary Metric and other important Secondary Metrics to establish distributions and outliers.
 2. **The Drivers (Bivariate)**: Select key features to plot AGAINST the Primary Metric. Focus on variables that logically move the needle.
-3. **The Nuance (Multivariate)**: Select an X and Y relationship and a 'color_by' segment (Category/Region) to reveal hidden divergences.
+3. **The Nuance (Multivariate)**: Select an X and Y relationship and a 'color_by' segment (e.g. Category/Region) to reveal hidden divergences.
 
 ### THE "SIGNIFICANCE" FILTER (MANDATORY)
 1. **Strategic Score (0-10)**: Only suggest combinations with a score > 7. 

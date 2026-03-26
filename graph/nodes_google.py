@@ -253,22 +253,35 @@ def feature_engineering_node(state: AgentState):
         logger.info(f"Applying feature engineering action: type='{action.type}', new_name='{action.new_name}'")
         # 1. Handle Math operations
         if action.type == "division" and action.numerator and action.denominator:
-            df[action.new_name] = df[action.numerator.value] / df[action.denominator.value].replace(0, np.nan) # Ensure division by zero is handled
-            state['secondary_metrics'].append(action.new_name)
+            try:
+                df[action.new_name] = df[action.numerator.value] / df[action.denominator.value].replace(0, np.nan) # Ensure division by zero is handled
+                state['secondary_metrics'].append(action.new_name)
+            except (TypeError, ValueError, KeyError) as e:
+                logger.warning(f"Failed to perform division for new feature '{action.new_name}': {e}. Skipping.")
         elif action.type == "addition" and action.addend_1 and action.addend_2:
-            df[action.new_name] = df[action.addend_1.value] + df[action.addend_2.value]
-            state['secondary_metrics'].append(action.new_name)
+            try:
+                df[action.new_name] = df[action.addend_1.value] + df[action.addend_2.value]
+                state['secondary_metrics'].append(action.new_name)
+            except (TypeError, ValueError, KeyError) as e:
+                logger.warning(f"Failed to perform addition for new feature '{action.new_name}': {e}. Skipping.")
         elif action.type == "subtraction" and action.minuend and action.subtrahend:
-            if pd.api.types.is_datetime64_any_dtype(df[action.minuend.value]) and pd.api.types.is_datetime64_any_dtype(df[action.subtrahend.value]):
-                df[action.new_name] = (df[action.minuend.value] - df[action.subtrahend.value]).dt.days # Difference in days
-            elif not pd.api.types.is_datetime64_any_dtype(df[action.minuend.value]) and not pd.api.types.is_datetime64_any_dtype(df[action.subtrahend.value]):
-                df[action.new_name] = df[action.minuend.value] - df[action.subtrahend.value]
-            else:
-                continue
-            state['secondary_metrics'].append(action.new_name)
+            try:
+                if pd.api.types.is_datetime64_any_dtype(df[action.minuend.value]) and pd.api.types.is_datetime64_any_dtype(df[action.subtrahend.value]):
+                    df[action.new_name] = (df[action.minuend.value] - df[action.subtrahend.value]).dt.days # Difference in days
+                    state['secondary_metrics'].append(action.new_name)
+                elif not pd.api.types.is_datetime64_any_dtype(df[action.minuend.value]) and not pd.api.types.is_datetime64_any_dtype(df[action.subtrahend.value]):
+                    df[action.new_name] = df[action.minuend.value] - df[action.subtrahend.value]
+                    state['secondary_metrics'].append(action.new_name)
+                else:
+                    logger.warning(f"Incompatible types for subtraction for new feature '{action.new_name}'. Minuend: {df[action.minuend.value].dtype}, Subtrahend: {df[action.subtrahend.value].dtype}. Skipping.")
+            except (TypeError, ValueError, KeyError) as e:
+                logger.warning(f"Failed to perform subtraction for new feature '{action.new_name}': {e}. Skipping.")
         elif action.type == "multiplication" and action.multiplicand and action.multiplier:
-            df[action.new_name] = df[action.multiplicand.value] * df[action.multiplier.value] # Simple multiplication
-            state['secondary_metrics'].append(action.new_name)
+            try:
+                df[action.new_name] = df[action.multiplicand.value] * df[action.multiplier.value] # Simple multiplication
+                state['secondary_metrics'].append(action.new_name)
+            except (TypeError, ValueError, KeyError) as e:
+                logger.warning(f"Failed to perform multiplication for new feature '{action.new_name}': {e}. Skipping.")
 
         # 2. Handle Temporal
         elif action.type == "temporal":

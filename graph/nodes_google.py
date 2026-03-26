@@ -115,13 +115,19 @@ def enrichment_node(state: AgentState):
     
     # 3. Invoke
     logger.info("Invoking LLM for data enrichment and context generation.")
-    result_dict = chain.invoke({
-        "filename": state["filename"],
-        "column_names": state["column_names"],
-        "sample_values": state["sample_values"],
-        "data_profile": state['data_profile']
-    })
-    result = EnrichmentModel(**result_dict)
+    try:
+        result_dict = chain.invoke({
+            "filename": state["filename"],
+            "column_names": state["column_names"],
+            "sample_values": state["sample_values"],
+            "data_profile": state['data_profile']
+        })
+        result = EnrichmentModel(**result_dict)
+    except Exception as e:
+        logger.error(f"Validation error in Enrichment: {e}")
+        state['error'] = True
+        state['error_message'] = f"Failed to parse data context: {e}"
+        return state
     logger.info("LLM enrichment call complete.")
     
     if not result.sufficiency.is_enough_context:
@@ -182,20 +188,20 @@ def create_feature_engineering_model(column_names: List[str]):
     class FERecipe(BaseModel):
         type: Literal["division", "subtraction", "multiplication", "addition", "temporal"]
         new_name: str
-        numerator: Optional[ColumnsEnum] = None
-        denominator: Optional[ColumnsEnum] = None
+        numerator: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
+        denominator: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
         
-        minuend: Optional[ColumnsEnum] = None
-        subtrahend: Optional[ColumnsEnum] = None
+        minuend: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
+        subtrahend: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
 
-        multiplicand: Optional[ColumnsEnum] = None
-        multiplier: Optional[ColumnsEnum] = None
+        multiplicand: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
+        multiplier: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
         
-        addend_1: Optional[ColumnsEnum] = None
-        addend_2: Optional[ColumnsEnum] = None
+        addend_1: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
+        addend_2: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
 
         # For temporal
-        time_col: Optional[ColumnsEnum] = None
+        time_col: Optional[ColumnsEnum] = Field(default=None, description="Must be a valid column name.")
 
         reasoning: str
     class FEPlan(BaseModel):
@@ -333,15 +339,21 @@ def visualisation_planning_node(state: AgentState):
     
     # 3. Invoke
     logger.info("Invoking LLM for visualisation plan.")
-    result_dict = chain.invoke({
-        "domain": state['domain'],
-        "enriched_context": state['enriched_context'],
-        "primary_metric": state['primary_metric'],
-        "secondary_metrics": state['secondary_metrics'],
-        "time_metadata": state['time_metadata'],
-        "data_profile": state['data_profile']
-    })
-    result = PlanningModel(**result_dict)
+    try:
+        result_dict = chain.invoke({
+            "domain": state['domain'],
+            "enriched_context": state['enriched_context'],
+            "primary_metric": state['primary_metric'],
+            "secondary_metrics": state['secondary_metrics'],
+            "time_metadata": state['time_metadata'],
+            "data_profile": state['data_profile']
+        })
+        result = PlanningModel(**result_dict)
+    except Exception as e:
+        logger.error(f"Validation error in Visualisation Planning: {e}")
+        state['error'] = True
+        state['error_message'] = f"Failed to parse visualisation plan: {e}"
+        return state
 
     logger.info(f"LLM visualisation plan received with {len(result.charts)} initial charts.")
 
@@ -634,8 +646,15 @@ def executive_summary_node(state: AgentState):
     chain = final_prompt | llm | parser
 
     logger.info("Invoking LLM for executive summary.")
-    result_dict = chain.invoke({"prompt_str": prompt})
-    response = ExecutiveBriefModel(**result_dict)
+    try:
+        result_dict = chain.invoke({"prompt_str": prompt})
+        response = ExecutiveBriefModel(**result_dict)
+    except Exception as e:
+        logger.error(f"Validation error in Executive Summary: {e}")
+        state['error'] = True
+        state['error_message'] = f"Failed to generate executive summary: {e}"
+        return state
+
     logger.info("Executive summary generated.")
 
     print("Final summary: ",response.act1, "\n", response.act2, "\n", response.act3, "\n")

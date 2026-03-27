@@ -378,7 +378,7 @@ def generate_visual_artifacts(df, chart_spec, state, tweak = None):
     target_col = color or x
         
     # Check if the target column is categorical and high-cardinality
-    if df[target_col].dtype == 'object' and df[target_col].nunique() > 12:
+    if df[target_col].dtype == 'object' and df[target_col].nunique() > 12 and pd.api.types.is_numeric_dtype(df[state["primary_metric"]]):
         # 3. Apply the Smart Top-K logic locally
         df, top_categories = apply_top_k(df, target_col, state["primary_metric"])
      

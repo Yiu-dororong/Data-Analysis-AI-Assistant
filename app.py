@@ -149,19 +149,21 @@ if not st.session_state.workflow_started:
             if sample_files:
                 # Let the user pick which sample to run
                 selected_sample = st.selectbox(
-                    " ## Select a Kaggle Dataset:", 
-                    sample_files,
-                    help="Source: [Browse Kaggle Datasets](https://www.kaggle.com)"
+                    label=" ## Select a Kaggle Dataset:", 
+                    options=sample_files,
+                    help="Source: [Browse Kaggle Datasets](https://www.kaggle.com)",
+                    placeholder="Select a Kaggle Dataset",
+                    index=None
                 )
-                
-                # Load the selected local file
-                file_path = os.path.join(TEST_DATA_DIR, selected_sample)
-                df = pd.read_csv(file_path)
-                st.success(f"📂 Loaded: `{selected_sample}`")
-                st.info(f'{kaggle_dataset_info.get(selected_sample).get("description")}')
-                col1, col2 = st.columns(2)
-                col1.link_button(label="Source",url=kaggle_dataset_info.get(selected_sample).get("source"))
-                col2.link_button(label="Sample Work",url=kaggle_dataset_info.get(selected_sample).get("sample_work"))
+                if selected_sample:
+                    # Load the selected local file
+                    file_path = os.path.join(TEST_DATA_DIR, selected_sample)
+                    df = pd.read_csv(file_path)
+                    st.success(f"📂 Loaded: `{selected_sample}`")
+                    st.info(f'{kaggle_dataset_info.get(selected_sample).get("description")}')
+                    col1, col2 = st.columns(2)
+                    col1.link_button(label="Source",url=kaggle_dataset_info.get(selected_sample).get("source"))
+                    col2.link_button(label="Sample Work",url=kaggle_dataset_info.get(selected_sample).get("sample_work"))
             else:
                 st.error("No CSV files found in /test folder.")
                 df = None

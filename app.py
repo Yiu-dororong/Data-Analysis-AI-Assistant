@@ -95,11 +95,17 @@ kaggle_dataset_info={
         "sample_work": "https://www.kaggle.com/code/lukhilaksh/customer-churn-eda-and-model-train",
         "description": "This synthetic dataset tracks usage, payments, and engagement for subscription-based services like SaaS or OTT platforms. It is designed for churn prediction and machine learning tasks, helping to identify why customers leave and how to improve retention."  
         },
-    "makeup_sales_dataset_2025.csv":{
-        "source":"https://www.kaggle.com/datasets/syedaeman2212/makeup-sales-in-2025/data",
-        "sample_work": "https://www.kaggle.com/code/lukhilaksh/makeup-sales-in-2025-model-90-beats",
-        "description": "The Makeup Sales Dataset (2025) is a synthetic dataset that simulates global sales of cosmetic products across different brands, countries, and sales channels. It is designed for data analysis, visualization, and machine learning projects."
-    },
+    "world-happiness-report-2021.csv":{
+        "source":"https://www.kaggle.com/datasets/ajaypalsinghlo/world-happiness-report-2021",
+        "sample_work": "https://www.kaggle.com/code/sejalkshirsagar/world-happiness-report-2021",
+        "description": "The World Happiness Report uses Gallup World Poll data to analyze global well-being, ranking countries based on self-reported life evaluations and six key factors: GDP, social support, life expectancy, freedom, generosity, and corruption. "
+        },
+    "Depression Professional Dataset.csv":{
+        "source":"https://www.kaggle.com/datasets/ikynahidwin/depression-professional-dataset",
+        "sample_work": "https://www.kaggle.com/code/nourhanwael7/eda-3-models-on-depression-98",
+        "description": "This dataset examines the impact of demographics, lifestyle, and workplace conditions on mental health. Featuring indicators like job satisfaction, stress levels, and history of illness, it is designed for EDA and predictive modeling to identify risk factors and understand the influence of work-life balance on mental well-being."
+        }
+    
 }
 # Initialize state flags
 if "workflow_started" not in st.session_state:
@@ -241,8 +247,9 @@ if st.session_state.workflow_started:
 
                 elif node_name == "visualisation_planning":
                     chart_specs = output.get("chart_specs")
-                    st.write("### 📈 Visualisation Planning")
-                    st.write((f"Planned Charts: \n Univariate: {len(chart_specs['univariate'])}, Bivariate: {len(chart_specs['bivariate'])}, Multivariate: {len(chart_specs['multivariate'])}"))
+                    if chart_specs:
+                        st.write("### 📈 Visualisation Planning")
+                        st.write((f"Planned Charts: \n Univariate: {len(chart_specs['univariate'])}, Bivariate: {len(chart_specs['bivariate'])}, Multivariate: {len(chart_specs['multivariate'])}"))
 
                 elif node_name == "visionary_analyst":
                     retry_count = st.session_state.retry_count
@@ -317,7 +324,3 @@ if st.session_state.workflow_started:
     else:
         status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
     stop_button_placeholder.empty()
-
-    if st.button("🔄 Restart Analysis"):
-        st.session_state.clear()
-        st.rerun()

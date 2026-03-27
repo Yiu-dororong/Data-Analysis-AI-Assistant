@@ -220,6 +220,7 @@ def feature_engineering_node(state: AgentState):
     logger.info("Created dynamic Pydantic model for feature engineering.")
     days, time_metadata=get_time_metadata(df,state['temporal_columns'])
     state['day_span'] = days
+    state['time_metadata'] = time_metadata
     
     parser = JsonOutputParser(pydantic_object=FEModel)
     prompt = PromptTemplate(
@@ -318,7 +319,6 @@ def feature_engineering_node(state: AgentState):
 
     state["column_names"]=list(df.columns)
     state["sample_values"]=df.sample(5,ignore_index=True)
-    state['time_metadata'] = time_metadata
     state['data_profile'] = get_data_profile(df)
     logger.info("--- Exiting Feature Engineering Node ---")
     return state

@@ -26,7 +26,7 @@ This app follows a strictly defined Directed Acyclic Graph (DAG) workflow:
    * Feature Engineering Node: Identifies potential derived metrics or groupings that might reveal hidden patterns for deeper visual and statistical discovery.
    * Visualization Planning Node: Decide how to combine different columns to plot a meaningful chart to extract data insights. 
    * Visionary Analyst Node: Synthesize data patterns into high-level business narratives.
-   * Executive Summary Node (The Closer): Compiles all findings and finalize the audit into an actionable report.
+   * Executive Summary Node: Compiles all findings and finalize the audit into an actionable report.
 
 <details>
   <summary>Click to view Architecture</summary>
@@ -37,7 +37,7 @@ This app follows a strictly defined Directed Acyclic Graph (DAG) workflow:
 
 ## 🛠️ Tech Stack
 
-* Orchestration: LangGraph (Multi-node State Machine)
+* Orchestration: LangGraph
 * Frontend: Streamlit
 * Data Engine: Pandas / PyGWalker 
 * Visulisation: Matplotlib / seaborn
@@ -66,10 +66,25 @@ streamlit run app.py
 ```
 
 ### 🧪 Try it with Samples
+
 Don't have data? Toggle the "Use Local Test Samples" checkbox to run the app on curated Kaggle datasets located in the /test directory.
 
+## 📂 Project Structure
 
-
+```
+project/
+├── app.py              # Main Entry: Streamlit UI & Session State orchestration
+├── graph/              # Core Logic: LangGraph Agent Implementation
+│   ├── __init__.py     # Package initialization
+│   ├── state.py        # Memory management: TypedDict defining the Agent's shared memory
+│   ├── prompts.py      # System Prompt Management: Centralized library for node instructions
+│   ├── nodes.py        # Standard Nodes(Ollama): Logic for Analysts, Auditors, and Planners
+│   ├── nodes_google.py # Model Adaptation: Optimized node logic for Google Gemini
+│   ├── workflow.py     # Orchestration: StateGraph definition and edge routing logic
+│   └── tools.py        # Utilities: Data Stitchers, Labelers, and CSV helper functions
+├── test/               # Local Samples: Curated Kaggle CSVs for offline/demo mode
+└── requirements.txt    # Dependency Manifest
+```
 
 ## ❓FAQ
 
@@ -109,7 +124,7 @@ with col1:
 
 To maintain security, the current chart pool is constrained. We aim to transition toward a Dynamic Tool-Binding approach using LangChain.
 
-Solution: Allow the AI to select from a broader "Chart Library." For example, the system could automatically decide between a Scatter Plot for correlation or a Heatmap for density, depending on the volume of the dataset.
+Solution: Allow the AI to select from a broader "Chart Library." For example, the system could automatically decide between a Scatter Plot for correlation or a Heatmap for density, depending on the volume of the dataset. A skill.md can be used to guide the LLM too.
 
 3. Support for Layered Chart "Stacks"
 
@@ -125,15 +140,23 @@ Currently, the Context Enrichment node operates autonomously. We aim to introduc
 Solution: After the AI generates its initial "Context Map" (e.g., mapping rev_q4 to Quarterly Revenue), the workflow will pause. The user can edit descriptions, rename metrics, or correct misinterpretations directly in the UI. This refined "Ground Truth" is then fed back into the LangGraph state, ensuring all subsequent analysis is perfectly aligned with the user's domain knowledge.
 
 ## 🖼️ Sample Work
+Step 1 (Choosing Dataset): 
 
 <img width="1440" height="839" alt="image" src="https://github.com/user-attachments/assets/2c214907-1500-444f-b395-f9dd7baef486" />
 
+Step 2 (Workflow Processing):
+
 <img width="1389" height="769" alt="image" src="https://github.com/user-attachments/assets/3d39278d-c695-4780-a4a0-884eaeb62c03" />
+
+Step 3 (Completed Chart Analysis):
 
 <img width="1381" height="1208" alt="image" src="https://github.com/user-attachments/assets/83256058-58e4-440f-ba4d-743e9a0a8048" />
 
+Step 4 (Complied All Completed Analysis into Exceutive Summary):
+
 <img width="1415" height="1009" alt="image" src="https://github.com/user-attachments/assets/52ba07d4-4428-463b-a9e8-441bf7619e5c" />
 
+Step 5 (Optional: Expand PygWalker for Custom Exploration):
 <img width="1387" height="993" alt="image" src="https://github.com/user-attachments/assets/a7a47cd2-294b-4798-bba3-bc5f8f7c7aa7" />
 
 ## 🫧 Similar Projects

@@ -41,7 +41,7 @@ This app follows a strictly defined Directed Acyclic Graph (DAG) workflow:
 * Frontend: Streamlit
 * Data Engine: Pandas / PyGWalker 
 * Visulisation: Matplotlib / seaborn
-* Intelligence: LangChain + LLM (Ollama - Gemma3: 12B / Google - Gemini2.5 Flash Lite) or other Vision LLM
+* Intelligence: LangChain + LLM (Ollama - Gemma3: 12B / Google - Gemini2.5 Flash Lite) or other Vision LLM (Better model provide better results. We recommend using models from google family to align the prompts best. The latest version of Gemma, such as Gemma4 26B A4B or Gemma4 E4B. 
 
 ## 🚀 Getting Started
 
@@ -68,6 +68,48 @@ streamlit run app.py
 ### 🧪 Try it with Samples
 
 Don't have data? Toggle the "Use Local Test Samples" checkbox to run the app on curated Kaggle datasets located in the /test directory.
+
+## 🔍 Monitoring & Observability
+To ensure the "Agentic reasoning" is transparent and auditable, we suggests a dual-layer monitoring approach. This ensures we can debug both the hard-coded Python logic and the semantic AI transitions.
+
+### Structured Application Logging (Included)
+
+The project includes a built-in logger module that tracks the code executions.
+
+* Data Integrity: Logs rows removed during preprocessing and outlier detection.
+* Node Transitions: Records exactly when the LangGraph moves between the Architect, Planner, and Analyst nodes.
+* Error Handling: Captures Python-level exceptions (e.g., file I/O or data-type mismatches) before they reach the LLM.
+
+### Semantic Tracing with LangSmith/Langfuse (Optional)
+
+For developers who want to inspect the "brain" of the app, you can use the following tools for monitoring. 
+<details>
+  <summary>How to Enable LangSmith Tracing</summary>
+
+
+If you want to trace the LLM's reasoning and view the Graph execution in a web UI, follow these steps:
+
+   1. Sign up at langchain.com.
+   2. Add the keys to your .env file:
+
+Restart the app. LangGraph will automatically detect these variables and start streaming traces to your dashboard. No code changes required!
+</details>
+
+<details>
+  <summary>How to Enable LangFuse Tracing</summary>
+
+If you prefer Langfuse (open-source), you wrap your graph call in app.py:
+```
+from langfuse.callback import CallbackHandler
+
+langfuse_handler = CallbackHandler()
+
+#for chunk in app.stream(initial_state, stream_mode="updates"):   
+#change the above line to the following line 
+for chunk in app.stream(initial_state, stream_mode="updates", config={"callbacks": [langfuse_handler]}):
+```
+</details>
+
 
 ## 📂 Project Structure
 

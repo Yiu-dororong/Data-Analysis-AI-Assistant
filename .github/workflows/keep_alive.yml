@@ -26,4 +26,4 @@ jobs:
           pip install selenium
 
       - name: Execute Headless Keep-Alive Check
-        run: python scripts/wake_app.py
+        run: python wake_app.py

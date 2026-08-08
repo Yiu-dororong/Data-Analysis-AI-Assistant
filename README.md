@@ -1,7 +1,7 @@
 # Data Analysis AI Assistant (DAAA)
 An end-to-end LangGraph-powered analytics engine that uses LLMs for semantic reasoning and Python-driven logic to ensure verifiable, accurate data insights.
 
-[Try it on streamlit](https://data-analysis-ai-assistant-bekc9grzqbhigny4wpd8h2.streamlit.app/)
+<sup>Notice: Streamlit demo is no longer available.<sup/>
 
 ## 💭 Preface
 Traditional analysis often fails by being either too rigid or too "black-box." This project bridges that gap by addressing the weaknesses of both extremes:
